@@ -11,7 +11,6 @@ Since there is no manual yet here are the flags as of now:
 -s                 sets the shift for generating the encryption board
 -w [file]          sets the target file to write to
 ```
-There is no help flag because I still didn't make one.
 
 I don't know what will happen if you run -d and -e at the same time and I am too tired to try.
 If you find out please let me know.
