@@ -25,7 +25,7 @@ Options:
 I don't know what will happen if you run -d and -e at the same time and I am too tired to try.
 If you find out please let me know.
 
-If you would like to improve on this file the give me a PR and I'll try to figure it out.
+If you would like to improve on this file shoot me a PR and I'll try to figure it out.
 Just annotate your code with comments so I don't have to guess what everything does.
 
 Yes the code isn't optimized I made this whole thing by accident.
