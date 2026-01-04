@@ -1,15 +1,25 @@
-Vigenere cipher from the command line, for whatever use cases you may need.
+Vigenere cipher from the command line, for whatever encoding and decoding cases you may need.
 
 This is a program that can encrypt any given text file or decrypt an encrypted file from the command line.
 
-Since there is no manual yet here are the flags as of now:
+To encode or decode a file you will need to provide an alphabet, a key, and a destination file.
+
+These options can be passed using the following flags:
 
 ```
--e [file]          sets the file as the target for encrytion
--d [file]          sets the file as the target for decryption
--k                 sets a key for encrypting or decrypting the file
--s                 sets the shift for generating the encryption board
--w [file]          sets the target file to write to
+Usage: v1 -a ALPHABET.txt -k KEY -w WRITE.txt [OPTIONS...]
+
+Options:
+    -a, --alphabet  ALPHABET.txt    Alphabet that will be used to encode/decode the file
+    -k, --key       KEY             Key that will be used to encode/decode the file
+    -w, --write     WRITE.txt       Destination for output
+
+    -e, --encode    ENCODE.txt      The file that will be encoded
+    -d, --decode    DECODE.txt      The file that will be decoded
+
+    -p, --print                     Prints the board used for encoding/decoding to the terminal
+
+    -h, --help                      Displays usage options
 ```
 
 I don't know what will happen if you run -d and -e at the same time and I am too tired to try.
