@@ -25,4 +25,4 @@ Options:
 
 If you have any suggestions for code optimization please don't hesitate to reach out.
 
-TUI coming soon
+TUI in the works.
