@@ -15,10 +15,12 @@ fn main() {
     let mut alphabet: Vec<char> = vec![]; // file with alphabet to create board
     let mut writefile: String = String::new(); // file to write encoded string to
 
-    let mut e: bool = true; // encrypt
+    let mut r: bool = false;
+    let mut w: bool = false; // write file
+    let mut e: bool = false; // encrypt
+    let mut d: bool = false;
     let mut a: bool = false; // alphabet
     let mut k: bool = false; // key
-    let mut w: bool = false; // write file
     let mut p: bool = false; // print board
 
     let mut i = 1;
@@ -27,13 +29,21 @@ fn main() {
         match input[i].as_str() {
             "-e" | "--encode" => {
                 e = true;
-                readfile = fs::read_to_string(input[i + 1].clone()).expect("Error reading target encode file").to_lowercase().chars().collect();
-                i += 1;
             }
 
             "-d" | "--decode" => {
-                e = false;
-                readfile = fs::read_to_string(input[i + 1].clone()).expect("Error reading target decode file").to_lowercase().chars().collect();
+                d = true;
+            }
+
+            "-r" | "--read" => {
+                readfile = fs::read_to_string(input[i + 1].clone()).expect("Error reading target encode file").to_lowercase().chars().collect();
+                r = true;
+                i += 1;
+            }
+
+            "-w" | "--write" => {
+                writefile = input[i + 1].clone();
+                w = true;
                 i += 1;
             }
 
@@ -57,12 +67,6 @@ fn main() {
                 i += 1;
             }
 
-            "-w" | "--write" => {
-                writefile = input[i + 1].clone();
-                w = true;
-                i += 1;
-            }
-
             "-p" | "--print" => {
                 p = true;
             }
@@ -79,9 +83,12 @@ fn main() {
         i += 1;
     }
 
-    check_input(a, k, w);
+    // validate inputs are not missing and nothing clashes
+    check_input(r, w, e, d, a, k);
 
     // remove non alphabet characters
+
+    // get rid of this bs
     readfile.retain(|c| *c == 'a' || *c == 'b' || *c ==  'c' || *c == 'd' || *c == 'e' || *c == 'f' || *c == 'g' || *c == 'h' || *c == 'i' || *c == 'j' || *c == 'k' || *c == 'l' || *c == 'm' || *c == 'n' || *c == 'o' || *c == 'p' || *c == 'q' || *c == 'r' || *c == 's' || *c == 't' || *c == 'u' || *c == 'v' || *c == 'w' || *c == 'x' || *c == 'y' || *c == 'z');
 
     let keystring: Vec<char> = init_key(key, &readfile).chars().collect();
@@ -91,7 +98,7 @@ fn main() {
     if e == true {
         fs::write(writefile, encode(keystring, readfile, &board)).expect("error writing to destination");
     }
-    else {
+    else if d == true {
         fs::write(writefile, decode(keystring, readfile, &board)).expect("error writing to destination");
     }
 
@@ -193,7 +200,27 @@ fn print_board(board: &Vec<Vec<char>>) {
 }
 
 /// Ensures all needed flags are provided by the user
-fn check_input(a: bool, k: bool, w: bool) {
+fn check_input(r: bool, w: bool, e: bool, d: bool, a: bool, k: bool) {
+    if e ==  d  {
+        if e == true {
+            eprintln!("Can not use the --encode and --decode flag together");
+        }
+
+        if e == false {
+            eprintln!("No --encode or --decode flag set");
+        }
+    }
+
+    if r == false {
+        eprintln!("No file provided to be read. Use -r or --read to assign a target");
+        std::process::exit(1);
+    }
+
+    if w == false {
+        eprintln!("No write destination provided. Use -w or --write to assign a target");
+        std::process::exit(1);
+    }
+
     if a == false {
         eprintln!("No alphabet provided. Use -a or --alphabet to assign an alphabet text file");
         std::process::exit(1);
@@ -203,11 +230,6 @@ fn check_input(a: bool, k: bool, w: bool) {
         eprintln!("No key provided. Use -k or --key to assign a key");
         std::process::exit(1);
     }
-
-    if w == false {
-        eprintln!("No write destination provided. Use -w or --write to assign a target");
-        std::process::exit(1);
-    }
 }
 
 /// Prints help/options
@@ -215,17 +237,18 @@ fn print_help() {
     println!(
 "Command line vigenere cypher tool
 
-Usage: v1 -a ALPHABET.txt -k KEY -w WRITE.txt [OPTIONS...]
+Usage: v1 -r READ.txt -w WRITE.txt -a ALPHABET.txt -k KEY [OPTIONS...]
 
 Options:
     -a, --alphabet  ALPHABET.txt    Alphabet that will be used to encode/decode the file
     -k, --key       KEY             Key that will be used to encode/decode the file
+    -r, --read      READ.txt        Target file for encoding/decoding
     -w, --write     WRITE.txt       Destination for output
 
-    -e, --encode    ENCODE.txt      The file that will be encoded
-    -d, --decode    DECODE.txt      The file that will be decoded
+    -e, --encode                    Encode read file
+    -d, --decode                    Decode read file
 
-    -p, --print                     Prints the board used for encoding/decoding to the terminal
+    -p, --print                     Prints the board generated for encoding/decoding
 
     -h, --help                      Displays usage options
 
